@@ -1,256 +1,420 @@
-## **1. Understanding of the Problem**
+# Deep Learning for Cointegration-Based Pairs Trading
 
-Financial markets are characterized by high levels of noise, volatility, and nonlinear interactions across assets. As a result, forecasting the absolute direction of individual stock prices remains a challenging problem. An alternative and widely studied approach is relative-value trading, where the objective is not to predict whether a stock will rise or fall, but rather to exploit temporary mispricings between two statistically related assets. This idea forms the basis of pairs trading, a market-neutral strategy first documented in academic literature by Gatev, Goetzmann, and Rouwenhorst (2006).
+---
 
-Pairs trading assumes that certain stocks exhibit a long-run equilibrium relationship driven by common economic forces, sectoral influences, or shared risk exposures. When this relationship deviates significantly from its historical norm, a mean-reversion opportunity may arise. The trader buys the undervalued stock and sells the overvalued one, profiting when the spread converges back to equilibrium. Unlike directional trading, this approach is largely immune to broad market movements, making it attractive to quantitative hedge funds and electronic trading desks.
+## 1. Understanding of the Problem
 
-A mathematically rigorous way to identify such relationships is through cointegration, introduced by Engle and Granger (1987). Two non-stationary price series are said to be cointegrated if a linear combination of them is stationary. This stationary spread can be modeled, standardized, and monitored for deviations, enabling systematic entry and exit rules. Classical statistical arbitrage frameworks rely on rolling regressions, z-score thresholds, and carefully engineered heuristics.
+Financial markets are characterized by high levels of noise, volatility, and nonlinear interactions across assets. As a result, forecasting the absolute direction of individual stock prices remains a challenging problem. An alternative and widely studied approach is **relative-value trading**, where the objective is not to predict whether a stock will rise or fall, but rather to exploit temporary mispricings between two statistically related assets. This idea forms the basis of **pairs trading**, a market-neutral strategy first documented in academic literature by Gatev, Goetzmann, and Rouwenhorst (2006).
 
-However, modern financial markets are increasingly dominated by algorithmic execution, high-frequency market microstructure, and regime shifts that cause traditional equilibrium relationships to break down. Fixed rule-based strategies may underperform in environments where co-movements evolve, spreads exhibit nonlinear dynamics, or optimal thresholds vary across market regimes. Classical pairs trading methods rely on rolling regressions, z-score thresholds (typically 2 sigma entry and 0.5 sigma exit), and handcrafted heuristics for signal rules. In contemporary markets featuring regime shifts, evolving correlations, and nonlinear spread dynamics, these fixed static thresholds may fail to adapt, leading to suboptimal performance and requiring frequent recalibration, often through grid search or optimization methods that are prone to overfitting.
+Pairs trading assumes that certain stocks exhibit a **long-run equilibrium relationship** driven by common economic forces, sectoral influences, or shared risk exposures. When this relationship deviates significantly from its historical norm, a **mean-reversion opportunity** may arise. The trader buys the undervalued stock and sells the overvalued one, profiting when the spread converges back to equilibrium. Unlike directional trading, this approach is largely immune to broad market movements, making it attractive to quantitative hedge funds and electronic trading desks.
 
-This motivates moving beyond rigid threshold heuristics toward dynamic, data-driven decision approaches. Deep learning and machine learning models can learn richer temporal patterns and nonlinear behaviors in the spread, adapting thresholds and trade signals automatically to varying market regimes and microstructure features. This motivates the integration of machine learning and deep learning techniques into pairs trading, enabling models to learn patterns directly from historical data instead of relying on rigid hand-crafted signals.
+A mathematically rigorous way to identify such relationships is through **cointegration**, introduced by Engle and Granger (1987). Two non-stationary price series are said to be cointegrated if a linear combination of them is stationary. This stationary spread can be modeled, standardized, and monitored for deviations, enabling systematic entry and exit rules. Classical statistical arbitrage frameworks rely on rolling regressions, z-score thresholds, and carefully engineered heuristics.
 
-This project builds on this line of work by combining classical cointegration-based signal generation with data-driven learning methods. The central problem addressed in this research is as follows:
+However, modern financial markets are increasingly dominated by algorithmic execution, high-frequency market microstructure, and regime shifts that cause traditional equilibrium relationships to break down. Fixed rule-based strategies may underperform in environments where co-movements evolve, spreads exhibit nonlinear dynamics, or optimal thresholds vary across market regimes. Classical pairs trading methods rely on rolling regressions, z-score thresholds (typically 2σ entry and 0.5σ exit), and handcrafted heuristics for signal rules. In contemporary markets featuring regime shifts, evolving correlations, and nonlinear spread dynamics, these fixed static thresholds may fail to adapt, leading to suboptimal performance and requiring frequent recalibration, often through grid search or optimization methods that are prone to overfitting.
 
-*Can we transform statistically validated cointegrated stock pairs into a labeled dataset of trading actions, and then use deep learning models to predict the next-day trading decision of Buy, Hold, or Sell with improved accuracy and robustness?*
+This motivates moving beyond rigid threshold heuristics toward **dynamic, data-driven decision approaches**. Deep learning and machine learning models can learn richer temporal patterns and nonlinear behaviors in the spread, adapting thresholds and trade signals automatically to varying market regimes and microstructure features. This motivates the integration of machine learning and deep learning techniques into pairs trading, enabling models to learn patterns directly from historical data instead of relying on rigid hand-crafted signals.
+
+This project builds on this line of work by **combining classical cointegration-based signal generation with data-driven learning methods**. The central problem addressed in this research is as follows:
+
+> **Research Question**  
+> *Can we transform statistically validated cointegrated stock pairs into a labeled dataset of trading actions, and then use deep learning models to predict the next-day trading decision of Buy, Hold, or Sell with improved accuracy and robustness?*
 
 This research is rooted in established literature yet aims to extend traditional statistical arbitrage frameworks by leveraging sequence learning models capable of absorbing richer temporal structure. By bridging econometrics with modern deep learning, the study explores whether algorithmic trading decisions can be made more adaptive, consistent, and profitable in real-world markets.
 
-# 
+---
 
-# 
-
-# 
-
-# 
-
-# 
-
-## **2\. Understanding of Solutions Proposed by Others**
+## 2. Understanding of Solutions Proposed by Others
 
 Recent research in deep learning for financial prediction has increasingly focused on transforming market structure, temporal dependencies, and cross-asset relationships into supervised learning tasks. Four strands of work are particularly relevant to the objective of converting cointegrated stock-pair dynamics into labeled trading decisions.
 
-**Hybrid CNN–LSTM–GNN for Multiclass Stock Prediction.**
+### 2.1 Hybrid CNN–LSTM–GNN for Multiclass Stock Prediction
 
-![][image1]
-
+![][image1]  
 ![][image2]
 
-Dong and Liang (2025) introduce the CLGNN model, which integrates convolutional layers, LSTM temporal encoding, and graph neural networks to jointly learn price patterns, temporal dynamics, and inter-stock relationships. A carefully engineered feature set is constructed through Pearson-correlation and information-gain filtering, and the model outputs five return categories: sharp rise, rise, flat, fall, and plummet. In backtests on the CSI All-Share universe, CLGNN achieves 20.7 percent cumulative returns in a three-month period, outperforming all ablation variants by 10 to 15 percent. The key conceptual contribution is the demonstration that graph-based relational modeling provides meaningful predictive power when the label depends on cross-asset co-movement, a principle highly relevant for pairs trading where the relationship between two assets is structurally important.
+Dong and Liang (2025) introduce the **CLGNN model**, which integrates convolutional layers, LSTM temporal encoding, and graph neural networks to jointly learn price patterns, temporal dynamics, and inter-stock relationships. A carefully engineered feature set is constructed through Pearson-correlation and information-gain filtering, and the model outputs five return categories: *sharp rise, rise, flat, fall,* and *plummet*. In backtests on the CSI All-Share universe, CLGNN achieves **20.7% cumulative returns over a three-month period**, outperforming all ablation variants by **10–15%**.
+
+The key conceptual contribution is the demonstration that **graph-based relational modeling provides meaningful predictive power when the label depends on cross-asset co-movement**, a principle highly relevant for pairs trading where the relationship between two assets is structurally important.
 
 The authors note:
 
-“CNN extracts local and short-term features, LSTM is adopted to capture long-term dependencies, while GNN models the relations among stocks through graph structures.”
+> “CNN extracts local and short-term features, LSTM is adopted to capture long-term dependencies, while GNN models the relations among stocks through graph structures.”
 
-“Experimental results show that the proposed hybrid model outperforms CNN, LSTM, GRU, Transformer, and TCN across all metrics.”
+> “Experimental results show that the proposed hybrid model outperforms CNN, LSTM, GRU, Transformer, and TCN across all metrics.”
 
-“The output layer predicts five categories. The model is trained using the cross-entropy loss function to optimize multi-class classification performance.”
+> “The output layer predicts five categories. The model is trained using the cross-entropy loss function to optimize multi-class classification performance.”
 
-“Compared with the best-performing single model, our hybrid approach improves accuracy by 7.2 percent, and improves F1-score by 5.8 percent.”
+> “Compared with the best-performing single model, our hybrid approach improves accuracy by 7.2 percent, and improves F1-score by 5.8 percent.”
 
-### **Transformer-Based Attention for Stock Movement Prediction (TEANet)**
+---
 
-# Zhang et al. (2022) propose TEANet, a Transformer-Encoder attention architecture based on the insight that stock markets are time-series systems with strong temporal dependence. To capture short-lived but information-rich signals, TEANet uses only a five-day input sequence, emphasizing that observations closer to the target day carry greater informational weight.
+### 2.2 Transformer-Based Attention for Stock Movement Prediction (TEANet)
 
-# TEANet combines multi-head attention with a feature extractor that integrates tweets and stock prices to capture the influence of heterogeneous market signals. The Transformer component extracts deep temporal features, while attention modules highlight the most relevant time steps. Experimental results show that TEANet is significantly superior to LSTM and other baselines, with trading simulations indicating an 8 to 12 percent improvement in profitability. These results highlight attention’s strength in weighting short-term temporal patterns, an ability that maps closely to detecting brief deviations in cointegration-based spread dynamics.
+Zhang et al. (2022) propose **TEANet**, a Transformer-Encoder attention architecture based on the insight that stock markets are time-series systems with strong temporal dependence. To capture short-lived but information-rich signals, TEANet uses only a **five-day input sequence**, emphasizing that observations closer to the target day carry greater informational weight.
 
-# 
+TEANet combines **multi-head attention** with a feature extractor that integrates **tweets and stock prices** to capture the influence of heterogeneous market signals. The Transformer component extracts deep temporal features, while attention modules highlight the most relevant time steps. Experimental results show that TEANet is significantly superior to LSTM and other baselines, with trading simulations indicating an **8–12% improvement in profitability**.
 
-# 
+These results highlight attention’s strength in **weighting short-term temporal patterns**, an ability that maps closely to detecting brief deviations in cointegration-based spread dynamics.
 
-# **Statistical Foundations for Our Pairs-Trading Setup (Zhu, 2024\)**
+---
+
+### 2.3 Statistical Foundations for Our Pairs-Trading Setup (Zhu, 2024)
 
 ![][image3]
 
-Zhu (2024) reinforces the core statistical principle underlying pairs trading: certain assets share a long-run equilibrium, and their spread forms a stationary linear combination of non-stationary price series. This validates the first step of our pipeline, using cointegration to select economically meaningful pairs and generate a stable spread to model.
+Zhu (2024) reinforces the core statistical principle underlying pairs trading: certain assets share a long-run equilibrium, and their spread forms a stationary linear combination of non-stationary price series. This validates the first step of our pipeline, using **cointegration to select economically meaningful pairs and generate a stable spread to model**.
 
-The paper also shows why classical z-score rules alone are insufficient. Zhu explains that traditional strategies are sensitive to market regimes and that performance deteriorates when equilibrium relationships drift. Because fixed thresholds must be recalibrated when volatility or correlation changes, classical pairs trading requires frequent tuning and remains vulnerable to nonlinear spread behavior. This motivates our approach of turning the cointegrated spread into a labeled dataset and letting sequence models learn adaptive buy, hold, and sell signals.
+The paper also shows why classical z-score rules alone are insufficient. Zhu explains that traditional strategies are sensitive to **market regimes** and that performance deteriorates when equilibrium relationships drift. Because fixed thresholds must be recalibrated when volatility or correlation changes, classical pairs trading requires frequent tuning and remains vulnerable to nonlinear spread behavior. This motivates our approach of turning the cointegrated spread into a **labeled dataset** and letting sequence models learn adaptive buy, hold, and sell signals.
 
-Zhu’s work essentially establishes the domain foundation: cointegration provides a statistically reliable spread, but modern deep learning is needed to replace fragile static heuristics.
+The classical benchmark in pairs trading is established by Gatev et al. (2006), who report an **annual excess return of 6.2%** and a **Sharpe ratio of 1.35** using a distance-based strategy. These results remain widely used as reference points when evaluating statistical arbitrage performance.
 
-The classical benchmark in pairs trading is established by Gatev et al. (2006), who report an annual excess return of 6.2 percent and a Sharpe ratio of 1.35 using a distance-based strategy. These results remain widely used as reference points when evaluating statistical arbitrage performance.
+---
 
-### **State-of-the-Art Deep Learning for Pairs Trading (Xia et al., 2025\)**
+### 2.4 State-of-the-Art Deep Learning for Pairs Trading (Xia et al., 2025)
 
-Xia et al. (2025) present one of the most advanced deep-learning frameworks for pairs trading, showing how modern architectures can replace both pair selection and trade execution in statistical arbitrage. They highlight limitations similar to those addressed in the present research: classical cointegration-based strategies struggle to capture nonlinear relationships in asset pairs and fail to adapt to evolving market dynamics.
+Xia et al. (2025) present one of the most advanced deep-learning frameworks for pairs trading, showing how modern architectures can replace both **pair selection** and **trade execution** in statistical arbitrage. They highlight limitations similar to those addressed in the present research: classical cointegration-based strategies struggle to capture nonlinear relationships in asset pairs and fail to adapt to evolving market dynamics.
 
-Their solution is a hierarchical deep learning system that uses supervised learning with Graph Attention Networks to model complex nonlinear asset relationships for pair selection, followed by a reinforcement learning agent that adapts trades in real time. Although their framework is more complex and relies on reinforcement learning, it aligns conceptually with our objective of replacing static z-score rules with dynamic learned signals. Xia et al. report a Sharpe ratio of 1.84, an annualized return of 50.98 percent, and a maximum drawdown of 17.96 percent, significantly outperforming classical approaches. These findings demonstrate that learning-based signals can materially outperform fixed rule-based execution.
+Their solution is a **hierarchical deep learning system** that uses supervised learning with **Graph Attention Networks (GATs)** to model complex nonlinear asset relationships for pair selection, followed by a **reinforcement learning agent** that adapts trades in real time. Although their framework is more complex and relies on reinforcement learning, it aligns conceptually with our objective of replacing static z-score rules with dynamic learned signals.
 
-### **Synthesis and Relevance to the Present Research**
+Xia et al. report:
 
-Collectively, these studies show a clear progression toward the central goal of this project: transforming structural or statistical market information into high-quality supervised labels and applying modern deep learning architectures to predict actionable trading decisions. Continuous trend labeling emphasizes the importance of label construction, TEANet demonstrates the superiority of attention-based sequence modeling, CLGNN reveals the value of capturing inter-asset relationships, and Xia et al. show that pairs trading itself can be reframed as a supervised or reinforcement learning problem.
+- Sharpe ratio: **1.84**  
+- Annualized return: **50.98%**  
+- Maximum drawdown: **17.96%**
 
-The present research builds on these insights by exploring whether statistically validated cointegrated stock pairs can serve as the basis for generating reliable buy, hold, and sell labels, and whether deep learning classifiers can learn to predict these actions directly from price sequences. Prior literature strongly suggests that combining rigorous label construction with expressive sequence models, particularly attention-based and graph-based networks, can significantly enhance predictive robustness and real-world trading performance.
+These results significantly outperform classical approaches and demonstrate that **learning-based signals can materially outperform fixed rule-based execution**.
 
-## **3\. Novelty and Understanding of the Proposed Methods by the Team**
+---
 
-The core novelty of this work lies in unifying classical econometric techniques with modern deep learning architectures to create an end-to-end supervised framework for predicting trading actions in statistically validated pairs. Traditionally, cointegration has been used primarily for pair selection and simple threshold-based signals. In contrast, the present approach transforms cointegrated spread dynamics into a structured prediction task: using the past sixty days of spread behaviour to classify the optimal trading action (Buy, Hold, or Sell) for the following day. This reframing, from unsupervised signal generation to supervised decision prediction, represents a fundamental methodological shift.
+### 2.5 Synthesis and Relevance to the Present Research
 
-A central component of this paradigm is the fully novel dataset developed for the project. It is constructed through a rigorous multi-stage process that has not been documented in prior academic or industry datasets. First, rolling-window cointegration is performed across all NIFTY 50 pairs over three-year horizons to ensure statistical validity of the underlying mean-reverting relationship. Second, each cointegrated window undergoes an exhaustive grid search over entry and exit z-score thresholds to determine the most profitable trading regime. Only windows that generate positive realized profit and loss are retained, ensuring that supervision is grounded in economic performance rather than heuristic assumptions. Third, each date within these windows is assigned a corresponding trading state, creating profit-aligned Buy, Hold, and Sell labels. Finally, the dataset incorporates a deep-learning-ready representation of the time series by constructing rolling OLS-based spreads, producing a clean temporal input sequence for each sample. This systematic integration of econometrics, trading optimization, and supervised labeling has not appeared in prior literature, making the dataset both unique and fit for purpose in deep learning applications for statistical arbitrage.
+Collectively, these studies show a clear progression toward the central goal of this project: transforming structural or statistical market information into **high-quality supervised labels** and applying modern deep learning architectures to predict **actionable trading decisions**.
 
-Building on this foundation, the proposed modelling framework evaluates multiple neural architectures, each targeting different aspects of spread behaviour. The first set of models follows a linear CNN–LSTM pipeline, in which convolutional layers identify short-term local features and LSTMs capture longer-term temporal dependencies characteristic of mean-reverting processes. A second architecture uses parallel CNN–LSTM paths, enabling local feature extraction and sequence modelling to operate independently before being merged into a unified representation. This leverages the complementary strengths of both modules. Beyond these, a hybrid multi-branch design is introduced, combining convolutional, recurrent, and dense pathways to process the spread sequence at multiple levels of abstraction simultaneously. Such hybrid networks have not previously been applied to forecasting cointegrated spread dynamics, representing a further methodological advancement.
+- CLGNN reveals the value of capturing **inter-asset relationships**.  
+- TEANet demonstrates the superiority of **attention-based sequence modeling**.  
+- Zhu (2024) provides **robust econometric foundations** for cointegration-based spread construction.  
+- Xia et al. (2025) show that pairs trading itself can be reframed as a **supervised or reinforcement learning problem**.
 
-Recognizing the rapid evolution of sequence modelling techniques, the work also proposes exploring Transformer-based architectures, which may capture nonlinear and long-range dependencies more effectively than recurrent networks. Applying attention mechanisms to spread data in a pairs-trading setting is an emerging direction that further extends the novelty of the modelling effort.
+The present research builds on these insights by exploring whether statistically validated cointegrated stock pairs can serve as the basis for generating reliable **Buy, Hold, and Sell labels**, and whether deep learning classifiers can learn to predict these actions directly from price sequences. Prior literature strongly suggests that combining **rigorous label construction** with **expressive sequence models**, particularly attention-based and graph-based networks, can significantly enhance predictive robustness and real-world trading performance.
 
-The methodological innovation extends beyond architecture design and into the formulation of the learning objective. Instead of relying solely on standard classification loss functions, the project incorporates financially informed objectives that include profit-weighted losses, asymmetric penalties reflecting trading risk, and evaluation metrics designed around realized profit and loss. This ensures that the models are optimized not only for statistical accuracy but also for practical trading utility, an aspect often overlooked in deep learning studies for financial prediction.
+---
 
-Taken together, the proposed methods present a holistic and original contribution to statistical arbitrage research. By combining a newly constructed, economically grounded dataset with diverse neural architectures and financially meaningful learning objectives, this work advances the state of supervised learning for cointegrated pairs trading beyond what exists in the single-stock forecasting literature.
+## 3. Novelty and Understanding of the Proposed Methods by the Team
+
+The core novelty of this work lies in **unifying classical econometric techniques with modern deep learning architectures** to create an end-to-end supervised framework for predicting trading actions in statistically validated pairs.
+
+Traditionally, cointegration has been used primarily for:
+
+- Pair selection  
+- Simple threshold-based signals
+
+In contrast, the present approach:
+
+- Transforms cointegrated spread dynamics into a **structured prediction task**:  
+  > Using the past 60 days of spread behaviour to classify the optimal trading action (Buy, Hold, or Sell) for the following day.
+- Reframes the problem from **unsupervised signal generation** to **supervised decision prediction**, representing a fundamental methodological shift.
+
+### 3.1 Novel Dataset Construction
+
+A central component of this paradigm is the **fully novel dataset** developed for the project. It is constructed through a rigorous multi-stage process:
+
+1. **Rolling-window cointegration** is performed across all NIFTY 50 pairs over three-year horizons to ensure statistical validity of the underlying mean-reverting relationship.  
+2. Each cointegrated window undergoes an **exhaustive grid search** over entry and exit z-score thresholds to determine the most profitable trading regime.  
+3. Only windows that generate **positive realized PnL** are retained, ensuring that supervision is grounded in **economic performance** rather than heuristic assumptions.  
+4. Each date within these windows is assigned a corresponding **trading state**, creating profit-aligned Buy, Hold, and Sell labels.  
+5. The dataset incorporates a **deep-learning-ready representation** of the time series by constructing rolling OLS-based spreads, producing a clean temporal input sequence for each sample.
+
+This systematic integration of econometrics, trading optimization, and supervised labeling has not appeared in prior literature, making the dataset both **unique** and **fit for purpose** in deep learning applications for statistical arbitrage.
+
+### 3.2 Model Architecture Innovations
+
+Building on this foundation, the proposed modelling framework evaluates multiple neural architectures, each targeting different aspects of spread behaviour:
+
+- **Linear CNN–LSTM pipeline**  
+  - Convolutional layers identify short-term local features.  
+  - LSTMs capture longer-term temporal dependencies characteristic of mean-reverting processes.
+
+- **Parallel CNN–LSTM architecture**  
+  - Local feature extraction and sequence modelling operate independently before being merged into a unified representation.  
+  - Leverages the **complementary strengths** of both modules.
+
+- **Hybrid multi-branch design**  
+  - Combines convolutional, recurrent, and dense pathways.  
+  - Processes the spread sequence at **multiple levels of abstraction simultaneously**.
+
+Such hybrid networks have not previously been applied to forecasting cointegrated spread dynamics, representing a further methodological advancement.
+
+Recognizing the rapid evolution of sequence modelling techniques, the work also proposes exploring **Transformer-based architectures**, which may capture nonlinear and long-range dependencies more effectively than recurrent networks. Applying **attention mechanisms** to spread data in a pairs-trading setting is an emerging direction that further extends the novelty of the modelling effort.
+
+### 3.3 Financially Informed Learning Objectives
+
+The methodological innovation extends beyond architecture design and into the formulation of the **learning objective**. Instead of relying solely on standard classification loss functions, the project incorporates financially informed objectives:
+
+- **Profit-weighted losses**  
+- **Asymmetric penalties** reflecting trading risk  
+- Evaluation metrics designed around **realized profit and loss**
+
+This ensures that the models are optimized not only for **statistical accuracy** but also for **practical trading utility**, an aspect often overlooked in deep learning studies for financial prediction.
+
+Taken together, the proposed methods present a **holistic and original contribution** to statistical arbitrage research. By combining a newly constructed, economically grounded dataset with diverse neural architectures and financially meaningful learning objectives, this work advances the state of supervised learning for cointegrated pairs trading beyond what exists in the single-stock forecasting literature.
 
 ![][image4]
 
-**4\. Implementation of Proposed Methods**
+---
 
-To investigate deep learning-based execution policies for cointegration-based pairs trading, we implemented and evaluated four distinct neural architectures. All models were trained using labeled spread sequences as input and learned to classify each timestep into one of three actions: buy (long spread), sell (short spread), or hold. The inputs were standardized 60-length spread windows, with labels assigned using threshold-based z-score rule supervision. Below we describe each model in technical detail.
+## 4. Implementation of Proposed Methods
 
-#### **4.1 Linear CONV–LSTM (Figure: Linear\_CONV\_LSTM)**
+To investigate deep learning-based execution policies for cointegration-based pairs trading, we implemented and evaluated **four distinct neural architectures**. All models were trained using labeled spread sequences as input and learned to classify each timestep into one of three actions:
 
-This baseline model integrates temporal feature extraction via 1D convolutions followed by sequence modeling using a vanilla LSTM. It processes each spread sequence of shape (60, 1\) as follows:
+- **Buy** (long spread)  
+- **Sell** (short spread)  
+- **Hold**
 
-**Training**:
+The inputs were standardized **60-length spread windows**, with labels assigned using threshold-based z-score rule supervision.
 
-* Loss: categorical\_crossentropy  
-* Optimizer: Adam with learning rate 0.001  
-* Epochs: 50–100 with early stopping  
-* Regularization: Dropout(0.3)  
-  ![][image5]  
-  However we realised this model was overfitted.
+---
 
-#### **4.2 Parallel Multi-Conv (No Recurrence)**
+### 4.1 Linear CONV–LSTM
 
-#### This is a lighter, purely convolutional model with no LSTM layers. The goal here is to test whether multi-scale temporal convolution alone is sufficient.
+This baseline model integrates temporal feature extraction via **1D convolutions** followed by sequence modeling using a **vanilla LSTM**. It processes each spread sequence of shape `(60, 1)`.
 
-**Training**:
+**Training setup:**
 
-* Same as above, but no recurrence and lower model complexity.
+- Loss: `categorical_crossentropy`  
+- Optimizer: Adam (learning rate = 0.001)  
+- Epochs: 50–100 with early stopping  
+- Regularization: `Dropout(0.3)`
 
+![][image5]
 
-#### **4.3Parallel Multi-Conv \+ LSTM (Figure: Parallel\_Paths\_2)**
+However, we observed that **this model was overfitted**: training accuracy was high while validation accuracy stagnated and then diverged.
 
-This architecture expands temporal coverage by running parallel convolutional paths with different kernel sizes, followed by LSTM layers on each path. The parallel outputs are concatenated post-sequence modeling:
+---
+
+### 4.2 Parallel Multi-Conv (No Recurrence)
+
+This is a lighter, **purely convolutional model** with no LSTM layers. The goal is to test whether **multi-scale temporal convolution alone** is sufficient.
+
+- Multiple Conv1D layers with different kernel sizes capture patterns at varying temporal scales.  
+- Global pooling layers aggregate temporal information before classification.
+
+**Training setup:**
+
+- Same optimization scheme as above (Adam, `categorical_crossentropy`)  
+- No recurrence and lower overall model complexity
+
+---
+
+### 4.3 Parallel Multi-Conv + LSTM
+
+This architecture expands temporal coverage by running **parallel convolutional paths with different kernel sizes**, followed by **LSTM layers on each path**. The parallel outputs are concatenated post-sequence modeling.
 
 ![][image6]
 
-**Training**:
+**Training setup:**
 
-* Optimizer: Adam (lr=0.001)  
-* Dropout: 0.3 after LSTM  
-* Batch size: 64  
-* Loss: categorical\_crossentropy  
-  ![][image7]
+- Optimizer: Adam (learning rate = 0.001)  
+- Dropout: 0.3 after LSTM  
+- Batch size: 64  
+- Loss: `categorical_crossentropy`
 
-#### 
+![][image7]
 
-#### **4.4 Final Model – Dilated CNN \+ BiLSTM \+ Skip Path (Figure: Final\_Model)**
+This model improved temporal expressiveness but at the cost of significantly increased computational complexity.
 
-This model combines multi-scale dilated convolutions with bidirectional LSTM and residual skip connections for raw input preservation. It captures both high-level features and raw temporal signatures.
+---
+
+### 4.4 Final Model – Dilated CNN + BiLSTM + Skip Path
+
+This is the **final deployment model**, combining **multi-scale dilated convolutions** with a **Bidirectional LSTM** and **residual skip connections** for raw input preservation. It captures both high-level features and raw temporal signatures.
 
 ![][image4]
 
-* **Input**: (60, 1\)  
-* **CNN Branches**:  
-  * Conv1D (filters=12, kernel=3, dilation=1) \+ BatchNorm \+ ReLU \+ AvgPool1D \+ Dropout(0.05)  
-  * Conv1D (filters=12, kernel=5, dilation=1) \+ ...  
-  * Conv1D (filters=12, kernel=3, dilation=8) \+ ...  
-  * Conv1D (filters=12, kernel=5, dilation=8) \+ ...  
-* **Concatenation of CNN Outputs**  
-* **BiLSTM Layer**: 32 units, dropout=0.15  
-* **Skip Path**: Raw input → Flatten → Dense(36)  
-* **Final Concatenation**: BiLSTM output \+ skip path  
-* **Dense Layers**:  
-  * Dense(18), ReLU → Dropout(0.2)  
-  * Dense(3), softmax output
+**Architecture details:**
 
-**Training Specs**:
+- **Input**: `(60, 1)`  
+- **CNN branches** (each followed by BatchNorm, ReLU, AvgPool1D, Dropout = 0.05):  
+  - Conv1D (filters = 12, kernel = 3, dilation = 1)  
+  - Conv1D (filters = 12, kernel = 5, dilation = 1)  
+  - Conv1D (filters = 12, kernel = 3, dilation = 8)  
+  - Conv1D (filters = 12, kernel = 5, dilation = 8)  
+- **Concatenation** of CNN outputs  
+- **BiLSTM layer**: 32 units, dropout = 0.15  
+- **Skip path**:  
+  - Raw input → Flatten → Dense(36)  
+- **Final concatenation**: BiLSTM output + skip path  
+- **Dense head**:  
+  - Dense(18), ReLU → Dropout(0.2)  
+  - Dense(3), softmax output
 
-* Loss: **weighted** categorical\_crossentropy  
-* Optimizer: Adam (lr \= 3e-4)  
-* Batch size: 64  
-* Epochs: Up to 100  
-* Validation split: 15%  
-* Callbacks: EarlyStopping, ModelCheckpoint
+**Training specs:**
+
+- Loss: **weighted** `categorical_crossentropy`  
+- Optimizer: Adam (learning rate = 3e-4)  
+- Batch size: 64  
+- Epochs: up to 100  
+- Validation split: 15%  
+- Callbacks: `EarlyStopping`, `ModelCheckpoint`
 
 ![][image8]
 
-### **Summary**
+This model provided the best balance between **performance, stability, and computational cost**.
 
-Across all models, the central innovation lies in replacing hand-coded z-score thresholds with a learnable sequence-to-action mapping. The progressive evolution, from linear stacking (4.1) to parallel recurrent (4.3), then purely convolutional (4.2), and finally hybrid dilated CNN BiLSTM with residual connections (4.4), reflects increasing architectural sophistication in modeling temporal volatility and reversals. This modular experimentation offers a rich ablation path, useful for assessing what kind of temporal structure (receptive field vs. memory vs. recurrence) most reliably identifies mean-reverting spread patterns.
+---
 
-**Lessons Learned from Experimentation**
+### 4.5 Summary of Architectural Progression
+
+Across all models, the central innovation lies in **replacing hand-coded z-score thresholds with a learnable sequence-to-action mapping**.
+
+Architectural evolution:
+
+1. **Linear stacking** (4.1) – Simple CNN → LSTM pipeline  
+2. **Parallel recurrent** (4.3) – Parallel CNN + LSTM paths  
+3. **Purely convolutional** (4.2) – Multi-scale Conv1D only  
+4. **Hybrid Dilated CNN + BiLSTM + Skip** (4.4) – Final, most balanced model
+
+This progression reflects increasing architectural sophistication in modeling temporal volatility and reversals. The modular experimentation offers a rich **ablation path**, useful for assessing what kind of temporal structure (receptive field vs. memory vs. recurrence) most reliably identifies mean-reverting spread patterns.
+
+---
+
+## 5. Lessons Learned from Experimentation
 
 The iterative experimentation process provided several key insights into how different neural architectures behave when modelling cointegrated spread sequences for trading action prediction.
 
-### **Overfitting in the Initial Linear CNN–LSTM Model**
+### 5.1 Overfitting in the Initial Linear CNN–LSTM Model
 
-Our first architecture followed a straightforward linear pipeline: a single set of convolutional layers feeding into an LSTM layer, followed by fully connected classification layers. Despite achieving strong training accuracy, the validation accuracy plateaued early and began to diverge from training accuracy, indicating clear overfitting. This revealed that a simple hierarchical structure struggles to generalize the subtle mean-reversion patterns present in sparse, noisy financial time series. The model was learning local patterns effectively but failed to capture broader temporal structure without memorizing the training data.
+The first architecture followed a straightforward linear pipeline: a single set of convolutional layers feeding into an LSTM layer, followed by fully connected classification layers.
 
-### 
+- Strong training accuracy  
+- Validation accuracy plateaued early and diverged → **clear overfitting**
 
-### **Challenges with Parallel CNN–LSTM Paths**
+This revealed that a simple hierarchical structure struggles to generalize the subtle mean-reversion patterns present in **sparse, noisy financial time series**. The model was learning local patterns effectively but failed to capture broader temporal structure without memorizing the training data.
 
-To address the limitations of the linear model, we next implemented a parallel-path architecture where a dedicated CNN branch and an LSTM branch learned independently before merging. While conceptually appealing, allowing parallel extraction of local and long-range features, the model proved computationally expensive and significantly slower to train. This highlighted the sensitivity of spread-based models to architectural complexity and emphasized that more parameters do not necessarily improve predictive utility.
+---
 
-### **Experimentation with Max and Average Pooling**
+### 5.2 Challenges with Parallel CNN–LSTM Paths
 
-Additional tests using max-pooling, average-pooling, and combinations of both provided further clarity on how pooling shapes feature extraction in our models. Max-pooling helped the network pick up sharper spread movements, while average pooling offered smoother representations of the underlying signal. In practice, **average pooling delivered slightly better results**, producing more stable gradients and marginally improved validation performance.
+To address the limitations of the linear model, we implemented a **parallel-path architecture** where a dedicated CNN branch and an LSTM branch learned independently before merging.
 
- **From Cross-Entropy to Weighted Loss Functions**
+- Conceptually appealing: local + long-range features learned in parallel  
+- Practically: **computationally expensive** and significantly **slower to train**
 
-Initial models were trained using standard categorical cross-entropy loss. However, this approach implicitly treats all misclassifications equally, which is misaligned with trading reality. For example, misclassifying a Buy as Hold may be less financially damaging than misclassifying a Sell as Buy. The models also tended to favour the majority class (often “Hold”), leading to high accuracy but poor economic performance.
+This highlighted the sensitivity of spread-based models to architectural complexity and emphasized that **more parameters do not necessarily improve predictive utility**.
 
-To correct this bias, we shifted to **weighted cross-entropy**, assigning custom penalty weights through a weighting matrix. This change produced more balanced learning across the three classes and forced the model to treat economically expensive misclassifications more seriously. This was a key lesson: **financial prediction demands loss functions that incorporate economic asymmetry, not just statistical correctness.**
+---
 
-**Hybrid TCN-Transformer**
+### 5.3 Experimentation with Max and Average Pooling
 
-### **Motivation: The Hypothesis of Spectral Duality**
+We tested **max-pooling**, **average-pooling**, and combinations of both:
 
-Following the guidance of our Teaching Assistant, Mr. Shreyas, to investigate neural architectures beyond the primary baseline, our team developed an experimental **Hybrid TCN-Transformer**. The motivation for this specific topology stems from a fundamental characteristic of financial time series known as **Spectral Duality**.
+- **Max-pooling** helped the network pick up sharper spread movements.  
+- **Average-pooling** offered smoother representations of the underlying signal.
 
-Spread data in pairs trading exhibits two distinct, often conflicting behaviors:
+In practice, **average pooling delivered slightly better results**, producing more stable gradients and marginally improved validation performance.
 
-1. **High-Frequency Microstructure (Local):** Rapid, mean-reverting shocks driven by order flow and liquidity noise (Short-term memory).  
-2. **Low-Frequency Regime Shifts (Global):** Structural changes in the cointegration relationship driven by macroeconomic factors (Long-term context).
+---
 
-Standard architectures often struggle to capture both simultaneously. Recurrent Neural Networks (LSTMs) suffer from information bottlenecks over long sequences, while vanilla Transformers can be computationally expensive and prone to overfitting on local noise. Our hypothesis was that a **parallel, dual-branch architecture** could decouple these signals, allowing specialized sub-networks to process them independently before fusion.
+### 5.4 From Cross-Entropy to Weighted Loss Functions
 
-### 
+Initial models were trained using standard `categorical_crossentropy`. However, this approach:
 
-### **Model Architecture: The Dual-Stream Approach**
+- Treats all misclassifications equally.  
+- Is misaligned with trading reality (economic asymmetry of errors).  
+- Led to the model favouring the majority class (often **“Hold”**), resulting in high accuracy but poor **economic performance**.
 
-Instead of a serial stacking of layers, we employed a parallel design where the multivariate input tensor is processed simultaneously by two specialized branches.
+To correct this bias, we shifted to **weighted cross-entropy**, assigning custom penalty weights through a weighting matrix:
 
-Branch 1: The Temporal Convolutional Network (TCN)
+- Encouraged more balanced learning across the three classes.  
+- Forced the model to treat **economically expensive misclassifications** more seriously.
 
-This branch acts as the "Microscope" for local feature extraction. It utilizes Causal Dilated Convolutions with dilation factors of 1, 2, 4,. The hierarchy of dilated convolutions imposes a strong inductive bias for local stationarity. By expanding the receptive field exponentially without pooling, the TCN efficiently detects sharp reversals and momentum shocks in the Z-score without losing temporal resolution.
+> **Key lesson:** Financial prediction demands loss functions that incorporate **economic asymmetry**, not just statistical correctness.
 
-Branch 2: The Transformer Encoder
+---
 
-This branch acts as the "Telescope" for global regime identification. It utilizes a Self-Attention mechanism with sinusoidal positional encodings. Attention is permutation-invariant and non-local, allowing the model to "look back" across the entire 60-day lookback window to identify if the current market state structurally resembles a previous volatility regime, regardless of the time distance.
+## 6. Hybrid TCN–Transformer
 
-Fusion & Learnable Pooling
+### 6.1 Motivation: The Hypothesis of Spectral Duality
 
-The local (TCN) and global (Transformer) embeddings are concatenated and passed through a Learnable Attention Pooling layer. Unlike global average pooling, which treats all time steps equally, this mechanism learns a weight vector, allowing the network to dynamically highlight specific time steps in the history that are most predictive of future **Lessons Learned & Limitations**
+Following guidance from our Teaching Assistant, Mr. Shreyas, to investigate neural architectures beyond the primary baseline, our team developed an experimental **Hybrid TCN–Transformer**.
 
-While the TCN-Transformer hybrid demonstrated superior raw metrics compared to simpler architectures, several trade-offs became apparent during experimentation which explain why it serves as a high-performance benchmark rather than our primary deployment model:
+The motivation stems from a fundamental characteristic of financial time series known as **Spectral Duality**. Spread data in pairs trading exhibits two distinct, often conflicting behaviours:
 
-1. **Computational Intensity:** The dual-branch architecture, particularly the Self-Attention mechanism, introduced a 3x increase in inference latency compared to the Dilated CNN-BiLSTM. In a high-frequency execution environment, this latency cost may outweigh the marginal gain in predictive accuracy.  
-2. **Data Hunger:** The Transformer branch showed signs of instability on smaller asset pairs with less historical liquidity. It required significantly more data to converge than the CNN-based approaches, making it less robust for newly listed or less liquid pairs.  
-3. **Complexity vs. Robustness:** While the "Financial Focal Loss" improved economic outcomes, the model was highly sensitive to hyperparameter tuning (specifically the weighting of the ordinal term). The Parallel CNN-LSTM (Section 5.4), while slightly less accurate in peak regimes, demonstrated greater stability across diverse market conditions with fewer hyperparameters to tune.
+1. **High-Frequency Microstructure (Local)**  
+   Rapid, mean-reverting shocks driven by order flow and liquidity noise (short-term memory).
 
-**Conclusion:** This experiment validated that separating local and global features is the theoretically correct approach for pairs trading. However, for practical deployment within the project's constraints, the **Dilated CNN \+ BiLSTM (Final Model)** offers a more balanced trade-off between computational efficiency, training stability, and predictive performance.
+2. **Low-Frequency Regime Shifts (Global)**  
+   Structural changes in the cointegration relationship driven by macroeconomic factors (long-term context).
 
-### **References**
+Standard architectures often struggle to capture both simultaneously:
 
-**Dong, Junhao, and Shi Liang.** 2025\. "Hybrid CNN-LSTM-GNN Neural Network for A-Share Stock Prediction." *Article*.
+- RNNs/LSTMs → information bottlenecks over long sequences  
+- Vanilla Transformers → computationally expensive, prone to overfitting on local noise
 
-**Engle, Robert F., and C. W. J. Granger.** 1987\. "Co-Integration and Error Correction: Representation, Estimation, and Testing." *Econometrica* 55, no. 2: 251–76.
+Our hypothesis: a **parallel, dual-branch architecture** can decouple these signals, allowing specialized sub-networks to process them independently before fusion.
 
-**Gatev, Evan, William N. Goetzmann, and K. Geert Rouwenhorst.** 2006\. "Pairs Trading: Performance of a Relative Value Arbitrage Rule." *The Review of Financial Studies* 19, no. 3: 797–827.
+---
 
-**Xia, et al.** 2025\. "State-of-the-Art Deep Learning for Pairs Trading."
+### 6.2 Model Architecture: The Dual-Stream Approach
 
-**Zhang, et al.** 2022\. "Transformer-Based Attention for Stock Movement Prediction (TEANet)."
+Instead of a serial stacking of layers, we employed a **parallel design** where the multivariate input tensor is processed simultaneously by two specialized branches.
 
-**Zhu, Xuanchi.** 2024\. "Examining Pairs Trading Profitability." *Statistical Foundations for Our Pairs-Trading Setup*. April 3, 2024\. 
+#### Branch 1: Temporal Convolutional Network (TCN)
+
+The TCN branch acts as the **“Microscope”** for local feature extraction:
+
+- Uses **causal dilated convolutions** with dilation factors 1, 2, 4, …  
+- Expands the receptive field exponentially **without pooling**.  
+- Efficiently detects sharp reversals and momentum shocks in the z-score **without losing temporal resolution**.
+
+#### Branch 2: Transformer Encoder
+
+The Transformer branch acts as the **“Telescope”** for global regime identification:
+
+- Uses **Self-Attention** with sinusoidal positional encodings.  
+- Attention is permutation-invariant and non-local, allowing the model to “look back” across the entire 60-day window.  
+- Identifies whether the current market state structurally resembles a previous volatility regime, **regardless of time distance**.
+
+#### Fusion & Learnable Pooling
+
+The local (TCN) and global (Transformer) embeddings are:
+
+1. **Concatenated**  
+2. Passed through a **Learnable Attention Pooling layer**
+
+Unlike global average pooling, which treats all time steps equally, this mechanism learns a **weight vector**, allowing the network to dynamically highlight specific time steps in the history that are most predictive of future actions.
+
+---
+
+### 6.3 Lessons Learned & Limitations
+
+While the TCN–Transformer hybrid demonstrated **superior raw metrics** compared to simpler architectures, several trade-offs emerged:
+
+1. **Computational Intensity**  
+   - Dual-branch design + Self-Attention introduced ~3× increase in inference latency vs. Dilated CNN–BiLSTM.  
+   - In high-frequency environments, this latency may outweigh marginal predictive gains.
+
+2. **Data Hunger**  
+   - The Transformer branch showed instability on **smaller asset pairs with less historical liquidity**.  
+   - Required significantly more data to converge than CNN-based approaches.  
+   - Less robust for newly listed or illiquid pairs.
+
+3. **Complexity vs. Robustness**  
+   - The “Financial Focal Loss” improved economic outcomes but was highly sensitive to hyperparameter tuning, especially the weighting of the ordinal term.  
+   - The **Parallel CNN–LSTM** (Section 4.3) and **Dilated CNN–BiLSTM** (Section 4.4) were **more stable across market conditions** with fewer hyperparameters.
+
+> **Conclusion:** Separating local and global features is theoretically correct and empirically promising for pairs trading. However, for practical deployment under the project’s constraints, the **Dilated CNN + BiLSTM (Final Model)** offers a more balanced trade-off between **computational efficiency, training stability, and predictive performance**.
+
+---
+
+## 7. References
+
+- **Dong, Junhao, and Shi Liang.** 2025. *Hybrid CNN-LSTM-GNN Neural Network for A-Share Stock Prediction.*  
+- **Engle, Robert F., and C. W. J. Granger.** 1987. “Co-Integration and Error Correction: Representation, Estimation, and Testing.” *Econometrica* 55(2): 251–76.  
+- **Gatev, Evan, William N. Goetzmann, and K. Geert Rouwenhorst.** 2006. “Pairs Trading: Performance of a Relative Value Arbitrage Rule.” *The Review of Financial Studies* 19(3): 797–827.  
+- **Xia, et al.** 2025. *State-of-the-Art Deep Learning for Pairs Trading.*  
+- **Zhang, et al.** 2022. *Transformer-Based Attention for Stock Movement Prediction (TEANet).*  
+- **Zhu, Xuanchi.** 2024. “Examining Pairs Trading Profitability.” *Statistical Foundations for Our Pairs-Trading Setup.* April 3, 2024.
+ 
 
 [image1]: <data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAnAAAACJCAYAAACsEQVbAAAneklEQVR4Xu3dB7QV1dUHcAFFARFsWFBB7AghURCNGkAjJlgQoxBLlokaCzEUUVGxAiISCwQUrBRFsSEqisbYUFRiixKs2KLEqBRBAft86z9++7Bnz5m5M/fd++I8/7+1znp3zjlzpt03s+/MmZk1AiIiIiIqlDVsBhERERH9sDGAIyIiIioYBnBEREREBcMAjoiIiKhgGMARERERFQwDOCIiIqKCYQBHREREVDAM4IiIiIgKhgEcERERUcEwgCMiIiIqGAZwRERERAXDAI6IiIioYBjAERERERUMAzgiIiKigmEAR0RERFQwDOCIiIiICoYBHBEREVHBMIAjIiIiKphaD+BOOeWUYNiwYTY7kwkTJgTrr7++zQ59++23wUYbbRSsscYawfLly20xERERUZ1RqwHc119/HQZYe+21ly3y6ty5czBy5Eg33Lt372DEiBGqRhzaJyIiIqrLajXaQXD14IMPZg6ystYTkydPDho1amSziYiIiOqUfBFSDSxevDhYuHBh8OWXX8YCs/bt27s8+Tt27Njw85///OdwuGfPnpHxFi1aFA7Xq1fP5Xft2jUYMGCAq9OxY8cwofy7775z+URERERFVmsBHAItoQOxwYMHh4Ed8po1axZ06dIlDPJuuOGGoGnTpmHgN27cuMh4r732WtC8eXPXhg7+FixYEH5u2LBh8Omnn7p8XL4lIiIiqgtqJYC74IILwiBKJwRp4vrrrw/zlixZ4vIOOOCA4LTTTnPDl19+ebDNNtuEn3WgpunAUALG7bffPjj55JNdPhEREVHRVT2Aw6VLHVgBhmfOnOmG99xzz6BDhw6qxvd1cKZNoG/b1KlTXZklN0gIfEbgSERERFTXxCOhCvMFW23btg1+/etfu2FfHckbOnRoZHjFihWx+o888kjQrVu34Le//W2wbNmyYM6cOcHEiRNd+YwZM1ZXJiIiIiq4eORUQeiHtv/++wcrV650eeiXhrNtCMLQ9w1lNiBbunRpmFe/fv3wDN68efPC4RYtWoTl+Ny6deugV69e4V/JQ5o2bZobxiNHGjRoEJk+ERERUdFVNYBDPzdc2pSbCQBnyL766qswH3eSogwP4bXefffdyLDuHwezZs2KjPfGG2+o0iCYPXt2sGrVqkgeERERUV1Q1QCOiIiIiCqPARwRERFRwTCAIyIiIioYBnBEREREBcMAjoiIiKhgGMARERERFQwDOCIiIqKCYQBHREREVDAM4IiIiIgK5kcTwL322mvBbrvtZrMr4uOPP7ZZmVxyySXBHnvsYbOJiHJ5/PHHg7PPPttmUxXcd999wTbbbGOza+ybb74J3xO+66672iL6f7/5zW+C+fPn2+wfraoHcPKOUl/aZZddXL2f/OQnsXJJo0aNUi1mZ9tp1qyZrVJjun28IqwUO08bbLCBrVISXlH285//PNaWL1188cXhODYfKY2tizRgwIDgrLPOiuWX01YWdhydmjRpYqt7dezYMTauThMnTgzr3XjjjbGyrAnbw+ZJysqOh7RgwQJbrSS8O/iggw6KteVLm2++eXgwEnm37Z/+9KdYXalfybaS2Lrl1Md3uog++eST2LIceeSRtlpM3u0Ctm6p+nWRXf5KrwO8s7tabdfElClT3Dy98sortrhsWffLvu85fqzQ92rlm/LFF19ENsAmm2xiqzh2Y+HgWBPvvfeea6vaAdxLL71ki73eeecdN07eAO7zzz+PraNnn33WlX/00UfBoYceGikX3bt3j+S3atXKlfngXbKo16VLF1uUu60999wzsa00CEj0dNZaay1bxcsGVW+++aYre/75513+ww8/HObp78nPfvazYPfddw+TbgNJ8nE2F0Ek8gTe62vrn3DCCa48CYIIO1458AvetnPGGWe48pUrVwZjx46NlG+xxRaqhe9Vctva+cnaVtb/+7zzmvadLqIJEya4Zc8SwIm86y1tG+d15513hm1df/31tugHT6+zSvjss89ce8cdd1xw5ZVXVqztSqhXr56bv6w/mtOk7Ze7du3q8mW/LDp16uTKGMCtVmvfFL3RTj/9dFvs6HqV+iJLW9UI4Nq0aVPWvMo4eQI4G7wdfPDBtoqDAzfq7LDDDi7v/vvvj63fCy+8UI0VhzrTp0+32bnbmjZtWmJbpWRdZq1x48ZuHJ85c+bEyjCMANjmSUJgbPnasKkUWx9nxvL69ttvI2107tzZVonYZ599wnrnnnuuLarotrXtIKWRtrLKO6+QNK9FpH945Ang8q63tG2clQ5WkN5++21b5QdPz38lVLq9SrPfEexnaqKc/TIMGTLEjccAbrX4mqoS/SU455xzbLFjvzCVIG1VI4Arl8xT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AO7JJ58MpkyZEtxxxx3BLbfcEixYsMBWye2yyy4L1lhjjeDxxx+3RRVx7bXXBjfffHNw++23BzfddFNwzTXXBJMmTQqeeOIJW7UwJk+eHGywwQbBpptuaoucL774Iujdu3fQtWvXYNCgQcHKlSvD/LPPPjto0qRJ0K1bNzPGavXq1Qtefvllmx1cffXVwdSpU8Ptf8MNN9ji0IYbbhj079/fZlfd9ddfb7OIiIgKo6oB3KpVq4KBAweGARfSl19+aavk9t5771U1gFuyZImbXwRv/fr1C3bYYQeXt9NOO9lRfvBkmZICuEsvvTQsf+ONN4L58+cHzZo1C4fhzjvvDD+nBXAo79Gjh80OPv7446BFixZh+fPPP2+Lg1deecWt19qwYsWKcFpff/114rogIiIqgqofOV944YWKH6SrGcCBb34RfPryiyItgPMtV+vWrd3nUgFc0tk1OPjgg2Nta3fffXfw7bff2uyqOf/888P5Offcc8Ozf0REREWUfGStkH/+85+RAAGX8375y1+64YsuuijYZJNN3DAukbZt2zYcRhn+tmzZ0rUHyHv00UeDBg0axMoRDGy11VZhfsOGDYPvvvvOle26665uXtKCiqRyWZbLL7/c5ek2f/rTn7r8gw46KMzDWS38xWXG999/35XjjJSel1tvvTV45plnXLl488033XIiYRjOOeecoGnTpmFgJWW9evWKjHv66adHplEqgJswYYItCqEM02nfvn1sOldeeWVQv3794KyzzlJjrHbIIYeE4/gMHTo02HjjjSPlhx12WGxZESDK+pR5sOtz5MiRbryNNtoouOeee2KXSbF+UT5nzpxg2rRpkTIiIqIi8R9ZK8gGcJ9//nlkGP3i9PCHH37oho877rjg4osvDj8PGTLEtYnhtdZaK5g+fXrQuHFjNy507949DI4QTCG/Z8+eYT4u5+l6+NyxY0c3rOn5sZCPoATQr0zqITDVbUob7dq1C/uA4TMCMd2O/oyEPncW8nEJVAcocO+997phaR8JfdmgefPmru7y5cvDz0kB3IEHHujGl/TOO++4cskbPXp0bDqffvppOFxOAPf666+79uCpp54KTjzxxOCjjz4KAzTJ/+yzzyLzgH56+CzrE/0rMSxnAqXuoYce+v2EFAT+sOaaa0YLiIiICsR/ZK0gG8DB2muvHRm25b5hfTDG8GOPPRZ+ln5UPshHfy6Qg76QoMXHTl8sW7YszEfAALaeHk4ru+uuuxLL0th6+Izlgj59+oTDcjMBPp933nmRukkBHNgzgkjoKwZ6OrjRQU9HyssJ4MAuk8ANEHZZk4Y7dOgQfl68eLEra9WqlatLRERU18SPnBVWqQBOznrJsPSBkzNAApfGMNylS5fw7+abb+7G0fUGDx4cGdZsXYE7apGPy7K+PnF6OK0MN3fg89NPPx28+uqr4efDDz/c1dWOOeaYsBzL4WtT+qYNGDAgHMb6ljJcgtZ10wI48dVXX7npINCEtOlIeSUCOJx5w5lVDHfq1Cm2rEnDY8eODT8jKJftouePiIiorkk+slaIL4CTOxNfeumlYO7cubFy37AN4OQMnA7gcMYIn3H25ZNPPgk/41IinHDCCZE2EeAhWPCx0wf09UIe+usJWw+fpU1fmR7ebbfdIv3zkmCciRMnus+2TTkzZgMrqYs+gUj4nBTAoQ+btsUWW2SejpTnCeAuueQS91kvk/6MOnYe0oax3n2PMiEiIqqLokfWKpAADn2aBPoqyQFY+qohzZgxI1J22223hfXxGZdCEfBJ+b777hv2DZMAbsyYMa4uUps2bdznefPmuTI8EgTPJsNnPFbCwlkgGW/LLbcMb5CQ4VmzZkXqDh8+PMxHZ/kdd9wx0qaMg0d06GE8lkMP64Qzc5atg4RAtW/fvuHnRo0ahfUksMJZKLSz3nrrxcZDeuSRRyLtyxkrbB/cnLHZZpuFw3KGU08HZwztdKT/HYJm9GmzMB7KcWMB6sgwYHoyX7gbVc8n6uIvnsmHGxIkH/MAMox5mDlzZmRcSbxRgYiI6qqqB3DPPvtseDA99thjI/k42I8aNSr8jE7q33zzTbBo0aIwKMNlPCR8BjxUFsMINpCHM0q4GUKgHP3T4D//+Y8LmtB5H+NJXZzxGj9+fHhglwfVWshHEIa6CA4QIKZBPZwtspfsMC6WScbH/GG+ZRgBKM5ajRgxIvjd734XrqPjjz9eNxFCwIUbJADLjjYxTbSHzxL0yTrTQSke4YJn2QHWMW48WLp0qSvXcEZz3Lhx7s5Poacj20FPB9sMy4Vh6TOnybrHdLFtFi5c6NYB8jAOtqtsvyuuuCK8kQV58p3AdpT1KdtN1qfA+sNNL7jZY4899nBBHBERUV1U9SMcggIeSKPkrKO29dZbh2cGKT+sS/sgYeRtt912kTwiIqK6oqqRlZwFwVkUWk3uGBU4E2UDOsoO604/FgSXXZEnZ3CJiIjqGkYN/0PXXXdd2O/P1xeP8sGlWPSZxA0fWW4OISIiKjIGcEREREQFwwCOiIiIqGAYwBEREREVDAM4IiIiooJhAEdERERUMAzgiIiIiAqGARwRERFRwTCAIyIiIioYBnBEREREBcMAjoiIiKhgGMARERERFQwDOCIiIqKCYQBHREREVDAM4IiIiIgKhgEcERERUcEwgCMiIiIqGAZwRERERAXDAI6IiIioYBjAERERERUMAzgiIiKigvk/mgycel/SMRYAAAAASUVORK5CYII=>
 
