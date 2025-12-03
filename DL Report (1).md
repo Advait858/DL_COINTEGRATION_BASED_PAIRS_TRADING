@@ -452,3 +452,6 @@ While the TCN–Transformer hybrid demonstrated **superior raw metrics** compare
 - **Xia, et al.** 2025. *State-of-the-Art Deep Learning for Pairs Trading.*  
 - **Zhang, et al.** 2022. *Transformer-Based Attention for Stock Movement Prediction (TEANet).*  
 - **Zhu, Xuanchi.** 2024. “Examining Pairs Trading Profitability.” *Statistical Foundations for Our Pairs-Trading Setup.* April 3, 2024.
+
+
+-> video link (https://drive.google.com/file/d/1Pr6SbSUrh04_6oi-YAyyDdZnD-4BC-RZ/view?usp=sharing)
