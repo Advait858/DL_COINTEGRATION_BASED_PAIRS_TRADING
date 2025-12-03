@@ -263,7 +263,8 @@ This is the **final deployment model**, combining **multi-scale dilated convolut
 - **CNN branches** (each followed by BatchNorm, ReLU, AvgPool1D, Dropout = 0.05):  
   - Conv1D (filters = 12, kernel = 3, dilation = 1)  
   - Conv1D (filters = 12, kernel = 5, dilation = 1)  
-  - Conv1D (filters = 12, kernel = 3, dilation = 8)  
+  - Conv1[Final_DL_Vid.mp4.zip](https://github.com/user-attachments/files/23898556/Final_DL_Vid.mp4.zip)
+D (filters = 12, kernel = 3, dilation = 8)  
   - Conv1D (filters = 12, kernel = 5, dilation = 8)  
 - **Concatenation** of CNN outputs  
 - **BiLSTM layer**: 32 units, dropout = 0.15  
